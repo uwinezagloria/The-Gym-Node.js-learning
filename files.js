@@ -17,6 +17,7 @@ fs.writeFile("./docs/blog2.txt","hello again !",()=>{
 })
 //directory
 if(!fs.existsSync("./assets")){
+    // we use mkdir to create directory
 fs.mkdir("./assets",(err)=>{
     if(err){
         console.log(err)
@@ -25,6 +26,7 @@ fs.mkdir("./assets",(err)=>{
 })
 }
 else{
+    // we use rmdir method to delete the directory / folder
     fs.rmdir("./assets",(err)=>{
         if(err){
             console.log(err)
@@ -32,5 +34,18 @@ else{
         console.log("folder was deleted")
     })
 }
+//deleting files
+if(fs.existsSync("./docs/deleteme.txt")){
+    //we use unlink method to delte file
+    fs.unlink("./docs/deleteme.txt",(err)=>{
+        if(err){
+            console.log(err)
+        }
+        console.log("file deleted")
+    })
+}
+      
+
+
 
 
