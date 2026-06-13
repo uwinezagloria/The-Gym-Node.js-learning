@@ -15,7 +15,31 @@ const  server=http.createServer((req,res)=>{
     //res.write("<h1>Hello world </h1>")
     //res.write("<h2>Hello again ! </h1>")
     //res.end()
-    fs.readFile()
+    let path="./views"
+    switch(req.url){
+        case "/":
+            path+="/index.html"
+            res.statusCode=200
+            break;
+            case "/about":
+                 res.statusCode=200
+                path+="/about.html"
+                break;
+                default:
+                    path+="/404.html"
+                     res.statusCode=404
+
+    }
+    fs.readFile(path,(err,data)=>{
+        if(err){
+            console.log(err)
+            res.end()
+        }
+        else{
+            res.write(data)
+            res.end()
+        }
+    })
 })
 server.listen(3000,"localhost",(req,res)=>{
  console.log("we are listen to port 3000")
