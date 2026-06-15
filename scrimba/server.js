@@ -1,5 +1,8 @@
 import http from "node:http";
 import {getDataFromDb} from "./database/db.js"
+import { sendJSONResponse } from "./utils/sendJSONResponse.js";
+import { getDataByPathparams } from "./utils/getDataByPathParams.js";
+
 /*
 Create a const to store the server.
 It should hold a new instance of the http module’s createServer method.
@@ -25,21 +28,46 @@ Challenge:
 
 const destinations= await getDataFromDb()
 if(req.url==="/api" && req.method==="GET"){
-  res.setHeader("Content-Type","application/json")
-  res.statusCode=200
-  res.write(JSON.stringify(destinations)) 
-  res.end()
-} else{
+  sendJSONResponse(res,200,destinations)
+ 
+} 
+ else if ( req.url.startsWith("/api/continent") && req.method==="GET" ) {
+  /*
+  Challenge:
+  1. Check if the url starts with “/api/continent”.
+    (Is there a JS method that allows you to check what a string starts with?)
+
+  2. If it does, serve only items from that continent.
+    (How can you get to what comes after the final slash?)
+    (What method can you use to filter data?)
+  */
+ const urlArray=req.url.split("/")
+ const continent=urlArray[urlArray.length-1]
+ let filterData=getDataByPathparams(destinations,"continent",continent)
+
+ sendJSONResponse(res,200,filterData)
+ }
+ else if(req.url.startsWith("/api/country") && req.method==="GET"){
+  const urlArray=req.url.split("/")
+  const country=urlArray[urlArray.length-1]
+  let filtingByCountry=getDataByPathparams(destinations,"country",country)
+  
+  sendJSONResponse(res,200,filtingByCountry)
+ }
+else{
   /*
 Challenge:
   1. If the client tries to access a route that isn’t covered by the above, send this object: 
       {error: "not found", message: "The requested route does not exist"}
   Think: what do we need to send along with the data?
 */
-res.setHeader("Content-Type","application/json")
-res.statusCode=404
-res.write(JSON.stringify({error:"not found", message:"The requessted route does not exist"}))
-res.end()
+sendJSONResponse(res,404,(
+  {
+    error:"not found",
+     message:"The requessted route does not exist"
+    }
+  ))
+
 }
 }) 
 server.listen(port,()=>console.log(`server connected on port ${8000}`))
