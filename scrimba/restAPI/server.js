@@ -3,6 +3,7 @@ import {getDataFromDb} from "./database/db.js"
 import { sendJSONResponse } from "./utils/sendJSONResponse.js";
 import { getDataByPathparams } from "./utils/getDataByPathParams.js";
 
+
 /*
 Create a const to store the server.
 It should hold a new instance of the http module’s createServer method.
@@ -19,6 +20,9 @@ Call it passing in two arguments:
   A callback function which can log "server connected on port 8000" */
 const port=8000;
   const server=http.createServer(async(req,res)=>{
+    const urlObj=new URL(req.url,`http://${req.headers.host}`)
+    const queryObj=Object.fromEntries(urlObj.searchParams)
+    
 /*
 Challenge:
 1. Access the ‘setHeader’ method on the response object and pass in two strings to set the      
@@ -27,8 +31,9 @@ Challenge:
   
 
 const destinations= await getDataFromDb()
-if(req.url==="/api" && req.method==="GET"){
-  sendJSONResponse(res,200,destinations)
+if(urlObj.pathname==="/api" && req.method==="GET"){
+  let filteredData=getDataByQueryParams(destinations, queryObj)
+  sendJSONResponse(res,200,filteredData)
  
 } 
  else if ( req.url.startsWith("/api/continent") && req.method==="GET" ) {
