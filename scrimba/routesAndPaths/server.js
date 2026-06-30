@@ -15,7 +15,7 @@ Challenge:
 import http from "node:http"
 import fs from "node:fs/promises"
 import path from "node:path"
-import { serveStatic } from "./utils/serveStatic.js"
+import { serverStatic } from "./utils/serveStatic.js"
 const port=8000
 /*
 Challenge 1:
@@ -34,12 +34,13 @@ Challenge 3:
 */
 
  //erveStatic(__dirname)
- const filePath=path.join(__dirname,"public","index.html")
+ const pathDir=path.join(__dirname,"public")
+ const filePath=path.join(pathDir,"index.html")
  console.log(filePath)
 const server=http.createServer(async(req,res)=>{
-const pathToResources=path.join(__dirname,"public","index.html")
-
-    const content=await fs.readFileSync(pathToResources)
+const pathToResources=path.join(pathDir,req.url==="/"?"index.html":req.url)
+//await serverStatic(req,res,__dirname)
+    const content=await fs.readFile(pathToResources)
     res.setHeader("Content-Type","text/html")
     res.write("<html><h1>The server is working</h1></html>")
     res.statusCode=200
